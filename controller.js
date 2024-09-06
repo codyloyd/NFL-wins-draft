@@ -44,7 +44,6 @@ const loadAllStats = async () => {
     draft.teams.forEach(async team => {
       const teamInfo = getTeam(team).team
       const record = await getRecord(teamInfo)
-      console.log(teamInfo)
       teamInfo.wins = await record.stats.find(stat => stat.name === 'wins').value
       teamInfo.record = record.summary
       draftStats.teams.push(teamInfo)

@@ -101,7 +101,7 @@ class MyList extends LitElement {
         <div class="item">
           <h2>${draft.name}: ${this.getTotalWins(draft)}</h2>
           <ul>
-            ${draft.teams.map(team => html`
+            ${draft.teams.sort((a, b) => b.wins - a.wins).map(team => html`
               <li style="--team-color: #${team.color}; --alternate-color: #${team.alternateColor}">
               <div class=logo>
                 <img src="${team.logos[0].href}" alt="${team.nickname}" width="50" height="50">
