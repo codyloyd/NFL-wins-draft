@@ -18,6 +18,10 @@ const drafts = [
   {
     name: 'Dad',
     teams: ['BAL', 'DET', 'BUF', 'ATL', 'TB']
+  },
+  {
+    name: 'Micah',
+    teams: ['LAR', 'CLE', 'PIT', 'SEA', 'ARI']
   }
 ]
 

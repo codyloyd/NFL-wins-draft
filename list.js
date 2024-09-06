@@ -70,6 +70,7 @@ class MyList extends LitElement {
         font-weight: bold;
         color: white;
         margin: 4px;
+        text-shadow: -2px -2px 0 var(--team-color), 2px -2px 0 var(--team-color), -2px 2px 0 var(--team-color), 2px 2px 0 var(--team-color);
       }
       .record {
         font-size: 14px;
@@ -77,7 +78,7 @@ class MyList extends LitElement {
         font-family: "Anton", sans-serif;
       }
       li > div {
-        background: #00000033;
+        background: var(--team-color)00033;
         padding: 6px;
         border-radius: 6px;
       }
