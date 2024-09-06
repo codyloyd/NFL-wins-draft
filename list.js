@@ -41,16 +41,22 @@ class MyList extends LitElement {
       }
       h1 {
         font-family: "Anton", sans-serif;
+        background: #d00;
+        color: white;
+        font-style: italic;
         font-size: 52px;
         text-align: center;
+        padding: 16px 2px;
         margin: 0;
+        margin-bottom: 16px;
       }
       h2 {
         font-family: "Anton", sans-serif;
         font-size: 42px;
         font-weight: bold;
-        margin-bottom: -8px;
+        margin-bottom: -14px;
         margin-top: 8px;
+        padding-left: 4px;
       }
       li {
         display: flex;
@@ -85,6 +91,11 @@ class MyList extends LitElement {
         list-style-type: none;
         padding: 0;
         margin: 0;
+      }
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 36px;
+        }
       }
     `
   }
