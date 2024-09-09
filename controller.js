@@ -6,6 +6,13 @@ const json = await response.json()
 const allTeams = json.sports[0].leagues[0].teams
 api.allTeams = allTeams
 
+const scheduleResponse = await fetch('https://cdn.espn.com/core/nfl/schedule?xhr=1')
+const scheduleJson = await scheduleResponse.json()
+const schedule = scheduleJson.content.schedule
+api.schedule = schedule
+
+api.week = scheduleJson.content.parameters.week
+
 const drafts = [
   {
     name: 'Ethan',
@@ -38,6 +45,18 @@ const getRecord = async (team) => {
   return json.items.find(item => item.name === 'overall')
 }
 
+const getCurrentWeekGame = (team) => {
+  let game = null
+  Object.values(api.schedule).forEach(day => {
+    day.games.forEach(g => {
+      if (g.competitions[0].competitors.find(c => c.team.abbreviation === team.abbreviation)) {
+        game = g
+      }
+    })
+  })
+  return game
+}
+
 const loadAllStats = async () => {
   const stats = await Promise.all(drafts.map(async draft => {
     return {
@@ -47,6 +66,8 @@ const loadAllStats = async () => {
         const record = await getRecord(teamInfo)
         teamInfo.wins = record.stats.find(stat => stat.name === 'wins').value
         teamInfo.record = record.summary
+        teamInfo.nextGame = getCurrentWeekGame(teamInfo)
+        // debugger
         return teamInfo
       }))
     }

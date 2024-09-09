@@ -36,16 +36,23 @@ class MyList extends LitElement {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       }
-      h1 {
+      header {
         font-family: "Anton", sans-serif;
         background: #d00;
-        color: white;
+        padding: 16px 2px;
         font-style: italic;
+      }
+      h1 {
+        color: white;
         font-size: 52px;
         text-align: center;
-        padding: 16px 2px;
         margin: 0;
-        margin-bottom: 16px;
+      }
+      h3 {
+        color: white;
+        text-align: center;
+        margin: 0;
+        font-size: 24px;
       }
       h2 {
         font-family: "Anton", sans-serif;
@@ -55,7 +62,8 @@ class MyList extends LitElement {
         margin-top: 8px;
         padding-left: 4px;
       }
-      li {
+      a {
+        text-decoration: none;
         display: flex;
         align-items: center;
         gap: 16px;
@@ -85,6 +93,16 @@ class MyList extends LitElement {
         flex-direction: column;
         align-items: center;
       }
+      .game-info {
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 8px;
+        color: black;
+        background: #ffffffaa;
+        padding: 2px 8px;
+        border-radius: 2px;
+        text-shadow: none;
+      }
       ul {
         list-style-type: none;
         padding: 0;
@@ -104,20 +122,29 @@ class MyList extends LitElement {
     }
 
     return html`
-      <h1>Loyd Family 2024 Wins Draft</h1>
+      <header>
+        <h1>Loyd Family 2024 Wins Draft </h1>
+        <h3>Week ${api.week}</h3>
+      </header>
       <div class="grid">
       ${this.stats.map(draft => html`
-        <div class="item">
+        <div class="item" >
           <h2>${draft.name}: ${this.getTotalWins(draft)}</h2>
           <ul>
             ${draft.teams.sort((a, b) => b.wins - a.wins).map(team => html`
               <li style="--team-color: #${team.color}; --alternate-color: #${team.alternateColor}">
-              <div class=logo>
-                <img src="${team.logos[0].href}" alt="${team.nickname}" width="50" height="50">
-                <span class="record">${team.record}</span>
-              </div>
-                  ${team.shortDisplayName} - ${team.wins} ${team.wins === 1 ? `win` : `wins`}
+              <a href="${team.links[3].href}">
+                <div class=logo>
+                  <img src="${team.logos[0].href}" alt="${team.nickname}" width="50" height="50">
+                  <span class="record">${team.record}</span>
                 </div>
+                <div>
+                  <div>${team.shortDisplayName} - ${team.wins} ${team.wins === 1 ? `win` : `wins`}</div>
+                  <div class="game-info">
+                    ${team.nextGame.shortName} - ${team.nextGame.competitions[0].status.type.detail}
+                  </div>
+                </div>
+              </a>
               </li>
             `)}
           </ul>
