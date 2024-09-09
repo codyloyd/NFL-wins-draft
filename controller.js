@@ -39,21 +39,18 @@ const getRecord = async (team) => {
 }
 
 const loadAllStats = async () => {
-  const stats = []
-  drafts.forEach(draft => {
-    const draftStats = {
+  const stats = await Promise.all(drafts.map(async draft => {
+    return {
       name: draft.name,
-      teams: []
+      teams: await Promise.all(draft.teams.map(async team => {
+        const teamInfo = getTeam(team).team
+        const record = await getRecord(teamInfo)
+        teamInfo.wins = record.stats.find(stat => stat.name === 'wins').value
+        teamInfo.record = record.summary
+        return teamInfo
+      }))
     }
-    draft.teams.forEach(async team => {
-      const teamInfo = getTeam(team).team
-      const record = await getRecord(teamInfo)
-      teamInfo.wins = await record.stats.find(stat => stat.name === 'wins').value
-      teamInfo.record = record.summary
-      draftStats.teams.push(teamInfo)
-    })
-    stats.push(draftStats)
-  })
+    }))
 
   return stats
 }

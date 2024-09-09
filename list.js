@@ -16,11 +16,8 @@ class MyList extends LitElement {
 
   loadStats() {
     loadAllStats().then(stats => {
-      // TODO: figure this out lmao
-      setTimeout(() => {
         this.stats = stats
         this.loading = false
-      }, 1000)
     })
   }
 
