@@ -44,7 +44,7 @@ class MyList extends LitElement {
       }
       h1 {
         color: white;
-        font-size: 52px;
+        font-size: 48px;
         text-align: center;
         margin: 0;
       }
