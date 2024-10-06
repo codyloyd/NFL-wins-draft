@@ -141,7 +141,9 @@ class MyList extends LitElement {
                 <div>
                   <div>${team.shortDisplayName} - ${team.wins} ${team.wins === 1 ? `win` : `wins`}</div>
                   <div class="game-info">
-                    ${team.nextGame.shortName} - ${team.nextGame.competitions[0].status.type.detail}
+                    ${team.nextGame ? html`
+                      ${team.nextGame?.shortName} - ${team.nextGame?.competitions[0].status.type.detail}
+                    ` : html`Bye Week`}
                   </div>
                 </div>
               </a>
