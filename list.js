@@ -27,6 +27,33 @@ class MyList extends LitElement {
     }, 0)
   }
 
+  getStatus(game, shortName) {
+    // IF STATUS_FINAL or STATUS_IN_PROGRESS
+    const status = game.status.type.name
+    const date = new Date(game.date)
+
+    if (status === 'STATUS_FINAL') {
+      const score1 = `${game.competitors[0].team.abbreviation} ${game.competitors[0].score}`
+      const score2 = `${game.competitors[1].team.abbreviation} ${game.competitors[1].score}`
+      return `Final score: ${score1} - ${score2}`
+    }
+
+    if (status === 'STATUS_IN_PROGRESS') {
+      const score1 = `${game.competitors[0].team.abbreviation} ${game.competitors[0].score}`
+      const score2 = `${game.competitors[1].team.abbreviation} ${game.competitors[1].score}`
+      return `In progress. Current score: ${score1} - ${score2}`
+    }
+
+    return `${shortName} - ` + date.toLocaleString('en-US', {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }) 
+  }
+
   static get styles() {
     return css`
       :host {
@@ -142,7 +169,7 @@ class MyList extends LitElement {
                   <div>${team.shortDisplayName} - ${team.wins} ${team.wins === 1 ? `win` : `wins`}</div>
                   <div class="game-info">
                     ${team.nextGame ? html`
-                      ${team.nextGame?.shortName} - ${team.nextGame?.competitions[0].status.type.detail}
+                      ${this.getStatus(team.nextGame?.competitions[0], team.nextGame?.shortName)}
                     ` : html`Bye Week`}
                   </div>
                 </div>
