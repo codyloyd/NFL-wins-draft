@@ -69,6 +69,8 @@ class MyList extends LitElement {
         background: #d00;
         padding: 16px 2px;
         font-style: italic;
+        position: sticky;
+        top: -112px;
       }
       h1 {
         color: white;
