@@ -62,6 +62,7 @@ class MyList extends LitElement {
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        background-color: white;
       }
       header {
         font-family: "Anton", sans-serif;
