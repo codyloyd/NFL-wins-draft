@@ -33,9 +33,9 @@ class MyList extends LitElement {
     const date = new Date(game.date)
 
     if (status === 'STATUS_FINAL') {
-      const score1 = `${game.competitors[0].team.abbreviation} ${game.competitors[0].score}`
-      const score2 = `${game.competitors[1].team.abbreviation} ${game.competitors[1].score}`
-      return `Final score: ${score1} - ${score2}`
+      const score1 = html`<span ?winner=${game.competitors[0].winner}>${game.competitors[0].team.abbreviation} ${game.competitors[0].score}</span>`
+      const score2 = html`<span ?winner=${game.competitors[1].winner}>${game.competitors[1].team.abbreviation} ${game.competitors[1].score}</span>`
+      return html`Final score: ${score1} - ${score2}`
     }
 
     if (status === 'STATUS_IN_PROGRESS') {
@@ -107,6 +107,10 @@ class MyList extends LitElement {
         margin: 4px;
         text-shadow: -2px -2px 0 var(--team-color), 2px -2px 0 var(--team-color), -2px 2px 0 var(--team-color), 2px 2px 0 var(--team-color);
       }
+      span[winner] {
+        font-weight: bold;
+        font-size: 16px;
+      }
       .record {
         font-size: 14px;
         font-weight: normal;
@@ -132,6 +136,9 @@ class MyList extends LitElement {
         padding: 2px 8px;
         border-radius: 2px;
         text-shadow: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
       ul {
         list-style-type: none;
