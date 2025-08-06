@@ -72,6 +72,20 @@ class MyList extends LitElement {
         position: sticky;
         top: -122px;
       }
+      .nav-link {
+        color: white;
+        text-decoration: none;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        margin: 10px auto;
+        display: inline-block;
+        transition: background 0.3s;
+      }
+      .nav-link:hover {
+        background: rgba(255,255,255,0.3);
+      }
       h1 {
         color: white;
         font-size: 48px;
@@ -160,8 +174,11 @@ class MyList extends LitElement {
 
     return html`
       <header>
-        <h1>Loyd Family 2024 Wins</h1>
+        <h1>Loyd Family 2025 Wins</h1>
         <h3>Week ${api.week}</h3>
+        <div style="text-align: center;">
+          <a href="picks.html" class="nav-link">Draft Picks</a>
+        </div>
       </header>
       <div class="grid">
       ${this.stats.map(draft => html`

@@ -13,6 +13,14 @@ api.schedule = schedule
 
 api.week = scheduleJson.content.parameters.week
 
+// Array of all 32 NFL teams for reference
+const allNFLTeams = [
+  'ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 
+  'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 
+  'LAC', 'LAR', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 
+  'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WSH'
+]
+
 const drafts = [
   {
     name: 'Ethan',
@@ -43,7 +51,7 @@ const getTeam = (abbr) => {
 }
 
 const getRecord = async (team) => {
-  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/types/2/teams/${team.id}/record`
+  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2025/types/2/teams/${team.id}/record`
   const response = await fetch(url)
   const json = await response.json()
   return json.items.find(item => item.name === 'overall')
@@ -80,4 +88,4 @@ const loadAllStats = async () => {
   return stats
 }
 
-export {api, loadAllStats}
+export {api, loadAllStats, allNFLTeams}
