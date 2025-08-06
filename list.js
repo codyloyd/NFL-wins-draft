@@ -1,24 +1,51 @@
 import {LitElement, html, css} from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
-import {api, loadAllStats} from './controller.js';
+import {api, loadAllStats, changeYear, getAvailableYears} from './controller.js';
 
 class MyList extends LitElement {
   static get properties() {
     return {
       totalWins: {type: Number},
-      loading: {type: Boolean}
+      loading: {type: Boolean},
+      selectedYear: {type: Number},
+      availableYears: {type: Array}
     };
   }
   constructor() {
     super();
     this.loading = true
+    this.selectedYear = api.currentYear
+    this.availableYears = getAvailableYears()
     this.loadStats()
   }
 
-  loadStats() {
-    loadAllStats().then(stats => {
-        this.stats = stats
+  async loadStats() {
+    const stats = await loadAllStats()
+    this.stats = stats
+    this.loading = false
+    this.selectedYear = api.currentYear
+  }
+
+  async handleYearChange() {
+    const yearSelect = this.shadowRoot.querySelector('#yearSelect')
+    const newYear = parseInt(yearSelect.value)
+    
+    if (newYear !== this.selectedYear) {
+      this.loading = true
+      try {
+        const success = await changeYear(newYear)
+        if (success) {
+          this.selectedYear = newYear
+          await this.loadStats()
+        } else {
+          this.loading = false
+          alert(`Failed to load data for year ${newYear}`)
+        }
+      } catch (error) {
+        console.error('Error changing year:', error)
         this.loading = false
-    })
+        alert(`Error loading data for year ${newYear}`)
+      }
+    }
   }
 
   getTotalWins(draft) {
@@ -73,17 +100,63 @@ class MyList extends LitElement {
         top: -122px;
       }
       .nav-link {
-        color: white;
-        text-decoration: none;
+        font-family: "Roboto", sans-serif;
+        font-style: normal;
+        font-weight: 400;
         background: rgba(255,255,255,0.2);
-        padding: 8px 16px;
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
         border-radius: 5px;
+        padding: 8px 16px;
         font-size: 14px;
-        margin: 10px auto;
-        display: inline-block;
+        cursor: pointer;
         transition: background 0.3s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .nav-link:hover {
+        background: rgba(255,255,255,0.3);
+      }
+      .options {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+      .year-selector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 10px 0;
+        color: white;
+      }
+      .year-selector select {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 5px;
+        padding: 8px 12px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+      .year-selector select option {
+        background: #d00;
+        color: white;
+      }
+      .year-selector button {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 5px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .year-selector button:hover {
         background: rgba(255,255,255,0.3);
       }
       h1 {
@@ -174,10 +247,19 @@ class MyList extends LitElement {
 
     return html`
       <header>
-        <h1>Loyd Family 2025 Wins</h1>
-        <h3>Week ${api.week}</h3>
-        <div style="text-align: center;">
-          <a href="picks.html" class="nav-link">Draft Picks</a>
+        <h1>Loyd Family ${this.selectedYear} Wins</h1>
+        ${this.selectedYear === 2025 ? html`<h3>Week ${api.week}</h3>` : ''}
+        <div class="options">
+          <a href="picks.html" class="nav-link">Draft Picker</a>
+          <div class="year-selector">
+            <label for="yearSelect">View Past Years:</label>
+            <select id="yearSelect" .value=${this.selectedYear}>
+              ${this.availableYears.map(year => html`
+                <option value="${year}" ?selected=${year === this.selectedYear}>${year}</option>
+              `)}
+            </select>
+            <button @click=${this.handleYearChange}>Load</button>
+          </div>
         </div>
       </header>
       <div class="grid">

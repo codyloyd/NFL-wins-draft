@@ -1,17 +1,25 @@
-const api = {}
+const api = {
+  currentYear: 2024
+}
 
-// get all teams
-const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams')
-const json = await response.json()
-const allTeams = json.sports[0].leagues[0].teams
-api.allTeams = allTeams
+// Initialize API data
+const initializeApiData = async (year = 2024) => {
+  // get all teams
+  const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams')
+  const json = await response.json()
+  const allTeams = json.sports[0].leagues[0].teams
+  api.allTeams = allTeams
 
-const scheduleResponse = await fetch('https://cdn.espn.com/core/nfl/schedule?xhr=1')
-const scheduleJson = await scheduleResponse.json()
-const schedule = scheduleJson.content.schedule
-api.schedule = schedule
+  const scheduleResponse = await fetch('https://cdn.espn.com/core/nfl/schedule?xhr=1')
+  const scheduleJson = await scheduleResponse.json()
+  const schedule = scheduleJson.content.schedule
+  api.schedule = schedule
+  api.week = scheduleJson.content.parameters.week
+  api.currentYear = year
+}
 
-api.week = scheduleJson.content.parameters.week
+// Initialize with current year
+await initializeApiData(2024)
 
 // Array of all 32 NFL teams for reference
 const allNFLTeams = [
@@ -21,37 +29,65 @@ const allNFLTeams = [
   'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WSH'
 ]
 
-const drafts = [
-  {
-    name: 'Ethan',
-    teams: ['SF', 'KC', 'GB', 'DAL', 'CHI']
-  },
-  {
-    name: 'Mom',
-    teams: ['HOU', 'MIA', 'CIN', 'PHI', 'JAX']
-  },
-  {
-    name: 'Dad',
-    teams: ['BAL', 'DET', 'BUF', 'ATL', 'TB']
-  },
-  {
-    name: 'Micah',
-    teams: ['LAR', 'CLE', 'PIT', 'SEA', 'ARI']
-  },
-  {
-    name: 'LEFTOVERS',
-    teams: ['TEN', 'NYJ', 'IND', 'CAR', 'MIN', 'LV', 'LAC', 'NYG', 'NO', 'DEN', 'WSH', 'NE']
-  }
-]
+// Historical draft data
+const historicalDrafts = {
+  2024: [
+    {
+      name: 'Ethan',
+      teams: ['SF', 'KC', 'GB', 'DAL', 'CHI']
+    },
+    {
+      name: 'Mom',
+      teams: ['HOU', 'MIA', 'CIN', 'PHI', 'JAX']
+    },
+    {
+      name: 'Dad',
+      teams: ['BAL', 'DET', 'BUF', 'ATL', 'TB']
+    },
+    {
+      name: 'Micah',
+      teams: ['LAR', 'CLE', 'PIT', 'SEA', 'ARI']
+    },
+    {
+      name: 'LEFTOVERS',
+      teams: ['TEN', 'NYJ', 'IND', 'CAR', 'MIN', 'LV', 'LAC', 'NYG', 'NO', 'DEN', 'WSH', 'NE']
+    }
+  ],
+  2025: [
+    {
+      name: 'Ethan',
+      teams: [] // Update these for 2025 draft
+    },
+    {
+      name: 'Mom',
+      teams: [] // Update these for 2025 draft
+    },
+    {
+      name: 'Dad',
+      teams: [] // Update these for 2025 draft
+    },
+    {
+      name: 'Micah',
+      teams: [] // Update these for 2025 draft
+    },
+    {
+      name: 'LEFTOVERS',
+      teams: [] // Update these for 2025 draft
+    }
+  ]
+}
+
+// Current drafts - defaults to current year
+let drafts = historicalDrafts[api.currentYear]
 
 const getTeam = (abbr) => {
-  return allTeams.find(team =>  {
+  return api.allTeams.find(team =>  {
       return team.team.abbreviation === abbr
   })
 }
 
 const getRecord = async (team) => {
-  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2025/types/2/teams/${team.id}/record`
+  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/${api.currentYear}/types/2/teams/${team.id}/record`
   const response = await fetch(url)
   const json = await response.json()
   return json.items.find(item => item.name === 'overall')
@@ -88,4 +124,25 @@ const loadAllStats = async () => {
   return stats
 }
 
-export {api, loadAllStats, allNFLTeams}
+// Function to change the active year
+const changeYear = async (year) => {
+  if (!historicalDrafts[year]) {
+    console.error(`No draft data available for year ${year}`)
+    return false
+  }
+  
+  api.currentYear = year
+  drafts = historicalDrafts[year]
+  
+  // Reinitialize API data for the selected year
+  await initializeApiData(year)
+  
+  return true
+}
+
+// Function to get available years
+const getAvailableYears = () => {
+  return Object.keys(historicalDrafts).map(year => parseInt(year)).sort((a, b) => b - a)
+}
+
+export {api, loadAllStats, allNFLTeams, changeYear, getAvailableYears, historicalDrafts}

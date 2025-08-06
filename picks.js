@@ -1,4 +1,4 @@
-import { api, allNFLTeams } from './controller.js'
+import { api, allNFLTeams, changeYear, getAvailableYears, historicalDrafts } from './controller.js'
 
 // Draft state
 let players = []
@@ -15,7 +15,7 @@ async function init() {
   updateCurrentPicker()
 }
 
-// Load team data with 2024 wins
+// Load team data with previous year wins
 async function loadTeamData() {
   try {
     const teamsWithStats = await Promise.all(allNFLTeams.map(async (abbr) => {
@@ -24,14 +24,14 @@ async function loadTeamData() {
       
       try {
         const record = await getRecord(teamInfo.team)
-        const wins2024 = await get2024Wins(teamInfo.team.id)
+        const previousYearWins = await getPreviousYearWins(teamInfo.team.id)
         
         return {
           abbreviation: abbr,
           name: teamInfo.team.displayName,
           logo: teamInfo.team.logos?.[0]?.href || '',
           color: teamInfo.team.color || '000000',
-          wins2024: wins2024 || 0,
+          previousYearWins: previousYearWins || 0,
           currentWins: record?.stats?.find(stat => stat.name === 'wins')?.value || 0,
           currentRecord: record?.summary || 'N/A'
         }
@@ -42,7 +42,7 @@ async function loadTeamData() {
           name: teamInfo.team.displayName,
           logo: teamInfo.team.logos?.[0]?.href || '',
           color: teamInfo.team.color || '000000',
-          wins2024: 0,
+          previousYearWins: 0,
           currentWins: 0,
           currentRecord: 'N/A'
         }
@@ -51,8 +51,8 @@ async function loadTeamData() {
     
     teamData = teamsWithStats.filter(team => team !== null)
     
-    // Sort by default (most wins 2024) after loading data
-    teamData.sort((a, b) => b.wins2024 - a.wins2024)
+    // Sort by default (most wins from previous year) after loading data
+    teamData.sort((a, b) => b.previousYearWins - a.previousYearWins)
     
     document.getElementById('loading').style.display = 'none'
     document.getElementById('teamsGrid').style.display = 'grid'
@@ -62,12 +62,13 @@ async function loadTeamData() {
   }
 }
 
-// Get 2024 season wins (we'll use a mock for now since 2024 data might not be available)
-async function get2024Wins(teamId) {
+// Get wins for the previous year
+async function getPreviousYearWins(teamId) {
+  const previousYear = api.currentYear - 1
   try {
-    const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/types/2/teams/${teamId}/record`
+    const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/${previousYear}/types/2/teams/${teamId}/record`
     const response = await fetch(url)
-    if (!response.ok) throw new Error('No 2024 data')
+    if (!response.ok) throw new Error(`No ${previousYear} data`)
     const json = await response.json()
     const overallRecord = json.items.find(item => item.name === 'overall')
     return overallRecord?.stats?.find(stat => stat.name === 'wins')?.value || 0
@@ -81,11 +82,14 @@ async function get2024Wins(teamId) {
       'SEA': 10, 'LAR': 10, 'SF': 6, 'ARI': 4, 'ATL': 8, 'TB': 9,
       'CAR': 5, 'NO': 5
     }
-    const team = getTeam(Object.keys(mock2024Wins).find(abbr => {
-      const t = getTeam(abbr)
-      return t?.team?.id === teamId
-    }))
-    return mock2024Wins[team?.team?.abbreviation] || 0
+    if (previousYear === 2024) {
+      const team = getTeam(Object.keys(mock2024Wins).find(abbr => {
+        const t = getTeam(abbr)
+        return t?.team?.id === teamId
+      }))
+      return mock2024Wins[team?.team?.abbreviation] || 0
+    }
+    return 0
   }
 }
 
@@ -95,7 +99,7 @@ function getTeam(abbr) {
 }
 
 async function getRecord(team) {
-  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2025/types/2/teams/${team.id}/record`
+  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/${api.currentYear}/types/2/teams/${team.id}/record`
   const response = await fetch(url)
   const json = await response.json()
   return json.items.find(item => item.name === 'overall')
@@ -193,15 +197,15 @@ function sortTeams() {
   teamData.sort((a, b) => {
     switch (sortBy) {
       case 'wins-desc':
-        return b.wins2024 - a.wins2024
+        return b.previousYearWins - a.previousYearWins
       case 'wins-asc':
-        return a.wins2024 - b.wins2024
+        return a.previousYearWins - b.previousYearWins
       case 'name-asc':
         return a.name.localeCompare(b.name)
       case 'name-desc':
         return b.name.localeCompare(a.name)
       default:
-        return b.wins2024 - a.wins2024
+        return b.previousYearWins - a.previousYearWins
     }
   })
   
@@ -231,7 +235,7 @@ function renderTeams() {
           <div class="team-name">${team.name}</div>
         </div>
         <div class="team-stats">
-          2024 Wins: ${team.wins2024} | Current: ${team.currentRecord}
+          ${api.currentYear - 1} Wins: ${team.previousYearWins} | Current: ${team.currentRecord}
         </div>
         ${isSelected ? `<div class="team-picker">Selected by: ${selectedBy}</div>` : ''}
       </div>
@@ -300,12 +304,95 @@ function exportDraftState() {
   return draft
 }
 
+// Generate formatted draft data for copy/paste into code (using current picks)
+function generateCurrentDraftData() {
+  if (players.length === 0) {
+    alert('No players added yet!')
+    return
+  }
+  
+  if (selectedTeams.size === 0) {
+    alert('No teams have been drafted yet!')
+    return
+  }
+  
+  const year = api.currentYear
+  
+  // Build draft data from current selections
+  const currentDrafts = players.map(player => {
+    const playerTeams = []
+    for (let [team, selectedPlayer] of selectedTeams) {
+      if (selectedPlayer === player) {
+        playerTeams.push(team)
+      }
+    }
+    return {
+      name: player,
+      teams: playerTeams
+    }
+  })
+  
+  // Add leftover teams if needed
+  const allSelectedTeams = new Set(selectedTeams.keys())
+  const leftoverTeams = allNFLTeams.filter(team => !allSelectedTeams.has(team))
+  
+  if (leftoverTeams.length > 0) {
+    currentDrafts.push({
+      name: 'LEFTOVERS',
+      teams: leftoverTeams
+    })
+  }
+  
+  // Format as code that can be pasted into the historicalDrafts object
+  const formattedData = `  ${year}: [\n${currentDrafts.map(draft => 
+    `    {\n      name: '${draft.name}',\n      teams: [${draft.teams.map(t => `'${t}'`).join(', ')}]\n    }`
+  ).join(',\n')}\n  ]`
+  
+  // Copy to clipboard
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(formattedData).then(() => {
+      alert(`Draft data for ${year} copied to clipboard!`)
+    }).catch(() => {
+      // Fallback for older browsers
+      fallbackCopyToClipboard(formattedData)
+    })
+  } else {
+    fallbackCopyToClipboard(formattedData)
+  }
+  
+  console.log('Generated draft data:', formattedData)
+  return formattedData
+}
+
+// Fallback copy method for mobile/older browsers
+const fallbackCopyToClipboard = (text) => {
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.select()
+  textarea.setSelectionRange(0, 99999) // For mobile devices
+  
+  try {
+    document.execCommand('copy')
+    alert(`Draft data for ${api.currentYear} copied to clipboard!`)
+  } catch (err) {
+    alert('Could not copy to clipboard, but data is logged to console.')
+  }
+  
+  document.body.removeChild(textarea)
+}
+
 // Global functions for HTML
 window.addPlayer = addPlayer
 window.removePlayer = removePlayer
 window.selectTeam = selectTeam
 window.sortTeams = sortTeams
 window.exportDraftState = exportDraftState
+window.generateCurrentDraftData = generateCurrentDraftData
+window.generateDraftData = generateDraftData
+window.generateCurrentDraftData = generateCurrentDraftData
 
 // Allow Enter key to add player
 document.addEventListener('DOMContentLoaded', () => {
@@ -315,6 +402,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 })
+
+// Make functions available globally for HTML onclick handlers
+window.addPlayer = addPlayer
+window.selectTeam = selectTeam
+window.sortTeams = sortTeams
+window.renderTeams = renderTeams
+window.generateDraftData = generateCurrentDraftData
 
 // Initialize when page loads
 init()
