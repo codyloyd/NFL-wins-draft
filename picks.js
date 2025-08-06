@@ -391,8 +391,6 @@ window.selectTeam = selectTeam
 window.sortTeams = sortTeams
 window.exportDraftState = exportDraftState
 window.generateCurrentDraftData = generateCurrentDraftData
-window.generateDraftData = generateDraftData
-window.generateCurrentDraftData = generateCurrentDraftData
 
 // Allow Enter key to add player
 document.addEventListener('DOMContentLoaded', () => {
