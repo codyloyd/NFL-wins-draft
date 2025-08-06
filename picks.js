@@ -64,11 +64,12 @@ async function loadTeamData() {
 
 // Get wins for the previous year
 async function getPreviousYearWins(teamId) {
-  const previousYear = api.currentYear - 1
+  // For drafting purposes, we want to use 2024 wins regardless of current year
+  const draftYear = 2024
   try {
-    const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/${previousYear}/types/2/teams/${teamId}/record`
+    const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/${draftYear}/types/2/teams/${teamId}/record`
     const response = await fetch(url)
-    if (!response.ok) throw new Error(`No ${previousYear} data`)
+    if (!response.ok) throw new Error(`No ${draftYear} data`)
     const json = await response.json()
     const overallRecord = json.items.find(item => item.name === 'overall')
     return overallRecord?.stats?.find(stat => stat.name === 'wins')?.value || 0
@@ -82,14 +83,11 @@ async function getPreviousYearWins(teamId) {
       'SEA': 10, 'LAR': 10, 'SF': 6, 'ARI': 4, 'ATL': 8, 'TB': 9,
       'CAR': 5, 'NO': 5
     }
-    if (previousYear === 2024) {
-      const team = getTeam(Object.keys(mock2024Wins).find(abbr => {
-        const t = getTeam(abbr)
-        return t?.team?.id === teamId
-      }))
-      return mock2024Wins[team?.team?.abbreviation] || 0
-    }
-    return 0
+    const team = getTeam(Object.keys(mock2024Wins).find(abbr => {
+      const t = getTeam(abbr)
+      return t?.team?.id === teamId
+    }))
+    return mock2024Wins[team?.team?.abbreviation] || 0
   }
 }
 
@@ -235,7 +233,7 @@ function renderTeams() {
           <div class="team-name">${team.name}</div>
         </div>
         <div class="team-stats">
-          ${api.currentYear - 1} Wins: ${team.previousYearWins} | Current: ${team.currentRecord}
+          2024 Wins: ${team.previousYearWins} | Current: ${team.currentRecord}
         </div>
         ${isSelected ? `<div class="team-picker">Selected by: ${selectedBy}</div>` : ''}
       </div>
