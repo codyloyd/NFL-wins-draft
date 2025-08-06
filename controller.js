@@ -13,28 +13,7 @@ api.schedule = schedule
 
 api.week = scheduleJson.content.parameters.week
 
-const drafts = [
-  {
-    name: 'Ethan',
-    teams: ['SF', 'KC', 'GB', 'DAL', 'CHI']
-  },
-  {
-    name: 'Mom',
-    teams: ['HOU', 'MIA', 'CIN', 'PHI', 'JAX']
-  },
-  {
-    name: 'Dad',
-    teams: ['BAL', 'DET', 'BUF', 'ATL', 'TB']
-  },
-  {
-    name: 'Micah',
-    teams: ['LAR', 'CLE', 'PIT', 'SEA', 'ARI']
-  },
-  {
-    name: 'LEFTOVERS',
-    teams: ['TEN', 'NYJ', 'IND', 'CAR', 'MIN', 'LV', 'LAC', 'NYG', 'NO', 'DEN', 'WSH', 'NE']
-  }
-]
+import { ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const getTeam = (abbr) => {
   return allTeams.find(team =>  {
@@ -43,7 +22,7 @@ const getTeam = (abbr) => {
 }
 
 const getRecord = async (team) => {
-  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2024/types/2/teams/${team.id}/record`
+  const url = `https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/seasons/2025/types/2/teams/${team.id}/record`
   const response = await fetch(url)
   const json = await response.json()
   return json.items.find(item => item.name === 'overall')
@@ -62,6 +41,21 @@ const getCurrentWeekGame = (team) => {
 }
 
 const loadAllStats = async () => {
+  const playersRef = ref(window.db, 'players');
+  const snapshot = await get(playersRef);
+  const players = snapshot.val();
+
+  if (!players) {
+    return [];
+  }
+
+  const drafts = Object.values(players).map(player => {
+    return {
+      name: player.name,
+      teams: player.teams ? Object.keys(player.teams) : []
+    };
+  });
+
   const stats = await Promise.all(drafts.map(async draft => {
     return {
       name: draft.name,
@@ -71,13 +65,12 @@ const loadAllStats = async () => {
         teamInfo.wins = record.stats.find(stat => stat.name === 'wins').value
         teamInfo.record = record.summary
         teamInfo.nextGame = getCurrentWeekGame(teamInfo)
-        // debugger
         return teamInfo
       }))
     }
-    }))
+  }));
 
-  return stats
+  return stats;
 }
 
 export {api, loadAllStats}

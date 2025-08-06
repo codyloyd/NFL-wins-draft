@@ -160,7 +160,7 @@ class MyList extends LitElement {
 
     return html`
       <header>
-        <h1>Loyd Family 2024 Wins</h1>
+        <h1>Loyd Family 2025 Wins</h1>
         <h3>Week ${api.week}</h3>
       </header>
       <div class="grid">

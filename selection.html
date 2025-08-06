@@ -3,14 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WINS WINS WINS WINS WINS WINS</title>
-  <link rel="apple-touch-icon" href="american-football-player.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Selection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet">
-  <script type="module" src="index.js"></script>
+  <script type="module" src="selection.js"></script>
   <script type="module">
     import { firebaseConfig } from './firebase-config.js';
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -21,14 +18,25 @@
   </script>
 </head>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
+  body {
     font-family: 'Roboto', sans-serif;
-    background-color: #d00;
+  }
+  .add-player {
+    margin-bottom: 16px;
   }
 </style>
 <body>
-  <my-list></my-list>
+  <h1>Team Selection</h1>
+
+  <div class="add-player">
+    <input type="text" id="player-name" placeholder="Enter player name">
+    <button id="add-player-btn">Add Player</button>
+  </div>
+
+  <div id="players-container"></div>
+
+  <h2>Available Teams</h2>
+  <div id="available-teams-container"></div>
+
 </body>
 </html>
