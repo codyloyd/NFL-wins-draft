@@ -53,26 +53,22 @@ const historicalDrafts = {
       teams: ['TEN', 'NYJ', 'IND', 'CAR', 'MIN', 'LV', 'LAC', 'NYG', 'NO', 'DEN', 'WSH', 'NE']
     }
   ],
-  2025: [
+    2025: [
     {
       name: 'Ethan',
-      teams: [] // Update these for 2025 draft
+      teams: ['BUF', 'WSH', 'DET', 'TB', 'DEN']
     },
     {
-      name: 'Mom',
-      teams: [] // Update these for 2025 draft
+      name: 'Kayla',
+      teams: ['PHI', 'LAC', 'SF', 'JAX', 'HOU']
     },
     {
-      name: 'Dad',
-      teams: [] // Update these for 2025 draft
-    },
-    {
-      name: 'Micah',
-      teams: [] // Update these for 2025 draft
+      name: 'Cody',
+      teams: ['BAL', 'KC', 'GB', 'CIN', 'LAR']
     },
     {
       name: 'LEFTOVERS',
-      teams: [] // Update these for 2025 draft
+      teams: ['ARI', 'ATL', 'CAR', 'CHI', 'CLE', 'DAL', 'IND', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PIT', 'SEA', 'TEN']
     }
   ]
 }
