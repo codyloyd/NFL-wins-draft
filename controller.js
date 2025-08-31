@@ -1,5 +1,5 @@
 const api = {
-  currentYear: 2024
+  currentYear: 2025
 }
 
 // Initialize API data
