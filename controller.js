@@ -19,7 +19,7 @@ const initializeApiData = async (year = 2024) => {
 }
 
 // Initialize with current year
-await initializeApiData(2024)
+await initializeApiData(api.currentYear)
 
 // Array of all 32 NFL teams for reference
 const allNFLTeams = [
