@@ -66,9 +66,13 @@ const historicalDrafts = {
       name: 'Cody',
       teams: ['BAL', 'KC', 'GB', 'CIN', 'LAR']
     },
+      {
+        name: 'BENJAMIN',
+        teams: ['KC','PIT','ARI','MIA','PHI']
+      },
     {
       name: 'LEFTOVERS',
-      teams: ['ARI', 'ATL', 'CAR', 'CHI', 'CLE', 'DAL', 'IND', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PIT', 'SEA', 'TEN']
+      teams: ['ATL', 'CAR', 'CHI', 'CLE', 'DAL', 'IND', 'LV', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'SEA', 'TEN']
     }
   ]
 }
