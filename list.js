@@ -21,30 +21,6 @@ class MyList extends LitElement {
   async loadStats() {
     const stats = await loadAllStats()
 
-    // === MOCK DATA — remove after demo ===
-    const fakeGame = {
-      uid: 'mock-buf-phi',
-      id: 'mock-buf-phi',
-      shortName: 'BUF @ PHI',
-      status: { type: { name: 'STATUS_IN_PROGRESS' } },
-      competitions: [{
-        status: { type: { name: 'STATUS_IN_PROGRESS' } },
-        competitors: [
-          { team: { abbreviation: 'PHI' }, score: '21', winner: false },
-          { team: { abbreviation: 'BUF' }, score: '24', winner: false }
-        ],
-        date: new Date().toISOString()
-      }]
-    }
-    for (const draft of stats) {
-      for (const team of draft.teams) {
-        if (team.abbreviation === 'BUF' || team.abbreviation === 'PHI') {
-          team.nextGame = fakeGame
-        }
-      }
-    }
-    // === END MOCK DATA ===
-
     this.stats = stats
     this.headToHeadMatchups = findHeadToHeadMatchups(stats)
     this.loading = false
