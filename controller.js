@@ -107,21 +107,54 @@ const getCurrentWeekGame = (team) => {
 
 const loadAllStats = async () => {
   const stats = await Promise.all(drafts.map(async draft => {
-    return {
-      name: draft.name,
-      teams: await Promise.all(draft.teams.map(async team => {
-        const teamInfo = getTeam(team).team
-        const record = await getRecord(teamInfo)
-        teamInfo.wins = record.stats.find(stat => stat.name === 'wins').value
-        teamInfo.record = record.summary
-        teamInfo.nextGame = getCurrentWeekGame(teamInfo)
-        // debugger
-        return teamInfo
-      }))
-    }
+    const teams = await Promise.all(draft.teams.map(async team => {
+      const teamInfo = getTeam(team).team
+      const record = await getRecord(teamInfo)
+      teamInfo.wins = record.stats.find(stat => stat.name === 'wins').value
+      teamInfo.record = record.summary
+      teamInfo.nextGame = getCurrentWeekGame(teamInfo)
+      return teamInfo
     }))
 
+    return { name: draft.name, teams }
+  }))
+
   return stats
+}
+
+const findHeadToHeadMatchups = (stats) => {
+  const teamToPlayer = new Map()
+  for (const draft of stats) {
+    if (draft.name === 'LEFTOVERS') continue
+    for (const team of draft.teams) {
+      teamToPlayer.set(team.abbreviation, draft.name)
+    }
+  }
+
+  const matchups = new Map()
+  for (const draft of stats) {
+    if (draft.name === 'LEFTOVERS') continue
+    for (const team of draft.teams) {
+      if (!team.nextGame) continue
+      const competitors = team.nextGame.competitions[0].competitors
+      const opponent = competitors.find(c => c.team.abbreviation !== team.abbreviation)
+      if (opponent && teamToPlayer.has(opponent.team.abbreviation)) {
+        const opponentPlayer = teamToPlayer.get(opponent.team.abbreviation)
+        if (opponentPlayer !== draft.name) {
+          const gameId = team.nextGame.uid || team.nextGame.id
+          if (!matchups.has(gameId)) {
+            matchups.set(gameId, {
+              player1: draft.name,
+              team1: team.abbreviation,
+              player2: opponentPlayer,
+              team2: opponent.team.abbreviation
+            })
+          }
+        }
+      }
+    }
+  }
+  return matchups
 }
 
 // Function to change the active year
@@ -145,4 +178,4 @@ const getAvailableYears = () => {
   return Object.keys(historicalDrafts).map(year => parseInt(year)).sort((a, b) => b - a)
 }
 
-export {api, loadAllStats, allNFLTeams, changeYear, getAvailableYears, historicalDrafts}
+export {api, loadAllStats, allNFLTeams, changeYear, getAvailableYears, historicalDrafts, findHeadToHeadMatchups}
