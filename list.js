@@ -53,7 +53,7 @@ class MyList extends LitElement {
 
   async handleYearChange(e) {
     const newYear = parseInt(e.target.value)
-    
+
     if (newYear !== this.selectedYear) {
       this.loading = true
       try {
@@ -80,14 +80,13 @@ class MyList extends LitElement {
   }
 
   getStatus(game, shortName) {
-    // IF STATUS_FINAL or STATUS_IN_PROGRESS
     const status = game.status.type.name
     const date = new Date(game.date)
 
     if (status === 'STATUS_FINAL') {
       const score1 = html`<span ?winner=${game.competitors[0].winner}>${game.competitors[0].team.abbreviation} ${game.competitors[0].score}</span>`
       const score2 = html`<span ?winner=${game.competitors[1].winner}>${game.competitors[1].team.abbreviation} ${game.competitors[1].score}</span>`
-      return html`Final score: ${score1} - ${score2}`
+      return html`Final: ${score1} - ${score2}`
     }
 
     if (status === 'STATUS_IN_PROGRESS') {
@@ -103,203 +102,234 @@ class MyList extends LitElement {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true
-    }) 
+    })
   }
 
   static get styles() {
     return css`
+      :host {
+        font-family: 'Saira Condensed', sans-serif;
+        display: block;
+        background: #0f1117;
+        min-height: 100vh;
+        color: #e2e8f0;
+      }
+
       @keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
       }
+
       @keyframes slideUp {
-        from { opacity: 0; transform: translateY(12px); }
+        from { opacity: 0; transform: translateY(24px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      :host {
-        font-family: "Roboto", sans-serif;
+
+      @keyframes loadBounce {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.4); opacity: 1; }
       }
+
+      @keyframes barGrow {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+      }
+
+      /* ── Loading ── */
+
       .loading-screen {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 60vh;
-        gap: 16px;
+        min-height: 80vh;
+        gap: 24px;
       }
+
       .loading-screen h1 {
-        color: white;
-        font-family: "Teko", sans-serif;
-        font-size: 36px;
+        font-family: 'Bungee', cursive;
+        font-size: 24px;
+        color: #ff3c50;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 4px;
         animation: pulse 1.5s ease-in-out infinite;
         margin: 0;
       }
+
       .loading-dots {
         display: flex;
-        gap: 8px;
+        gap: 10px;
       }
+
       .loading-dots span {
-        width: 12px;
-        height: 12px;
-        background: #d00;
+        width: 14px;
+        height: 14px;
+        background: #ff3c50;
         border-radius: 50%;
-        animation: pulse 1.4s ease-in-out infinite;
+        animation: loadBounce 1.4s ease-in-out infinite;
       }
-      .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-      .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        background-color: #111;
-        gap: 2px;
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-      .item {
-        background: #1a1a1a;
-        padding-bottom: 16px;
-        animation: slideUp 0.4s ease-out both;
-      }
-      .item:nth-child(2) { animation-delay: 0.05s; }
-      .item:nth-child(3) { animation-delay: 0.1s; }
-      .item:nth-child(4) { animation-delay: 0.15s; }
-      .item:nth-child(5) { animation-delay: 0.2s; }
-      .player-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 8px 0;
-      }
-      .rank {
-        font-family: "Teko", sans-serif;
-        font-size: 28px;
-        color: #555;
-        min-width: 32px;
-        text-align: center;
-        line-height: 1;
-      }
-      .rank.rank-1 { color: #ffd700; }
-      .rank.rank-2 { color: #c0c0c0; }
-      .rank.rank-3 { color: #cd7f32; }
-      .player-name {
-        font-family: "Teko", sans-serif;
-        font-size: 36px;
-        font-weight: bold;
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        line-height: 1;
-      }
-      .win-count {
-        font-family: "Teko", sans-serif;
-        font-size: 36px;
-        color: #ff4444;
-        line-height: 1;
-      }
-      .win-label {
-        font-family: "Roboto", sans-serif;
-        font-size: 11px;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-top: 2px;
-      }
-      .win-badge {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-left: auto;
-        padding-right: 12px;
-      }
+
+      .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+      .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+      /* ── Header ── */
+
       header {
-        font-family: "Teko", sans-serif;
         background:
-          radial-gradient(circle at 20% 50%, rgba(255,255,255,0.06) 1px, transparent 1px),
-          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.04) 1px, transparent 1px),
-          radial-gradient(circle at 50% 80%, rgba(255,255,255,0.05) 1px, transparent 1px),
-          linear-gradient(135deg, #c00 0%, #d00 40%, #a00 100%);
-        background-size: 6px 6px, 6px 6px, 6px 6px, 100% 100%;
-        padding: 14px 16px 12px;
-        font-style: italic;
+          repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 14px,
+            rgba(255,255,255,0.04) 14px,
+            rgba(255,255,255,0.04) 28px
+          ),
+          linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+        padding: 20px 20px 16px;
         position: sticky;
         top: 0;
         z-index: 10;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-        border-bottom: 4px solid #ff4444;
+        box-shadow: 0 4px 30px rgba(220, 38, 38, 0.3);
       }
+
       .header-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-      footer {
-        background: #1a1a1a;
-        border-top: 1px solid #333;
-        padding: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        font-style: normal;
-      }
-      .footer-link {
-        font-family: "Roboto", sans-serif;
-        font-weight: 500;
-        background: rgba(255,255,255,0.08);
-        color: #888;
-        border: 1px solid #333;
-        border-radius: 6px;
-        padding: 8px 16px;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-      .footer-link:hover {
-        background: rgba(255,255,255,0.15);
-        color: #ccc;
-      }
-      footer select {
-        background: rgba(255,255,255,0.08);
-        color: #888;
-        border: 1px solid #333;
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 12px;
-        font-family: "Roboto", sans-serif;
-        cursor: pointer;
-      }
-      footer select option {
-        background: #1a1a1a;
-        color: #ccc;
-      }
+
       h1 {
+        font-family: 'Bungee', cursive;
         color: white;
-        font-size: 52px;
+        font-size: 36px;
         margin: 0;
         text-transform: uppercase;
-        letter-spacing: 3px;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        letter-spacing: 2px;
+        text-shadow: 0 3px 0 rgba(0,0,0,0.2);
+        line-height: 1.1;
+      }
+
+      .week-badge {
+        font-family: 'Bungee', cursive;
+        font-size: 16px;
+        background: rgba(0,0,0,0.25);
+        padding: 6px 14px;
+        border-radius: 100px;
+        color: white;
+        white-space: nowrap;
+        letter-spacing: 1px;
+        backdrop-filter: blur(4px);
+        border: 2px solid rgba(255,255,255,0.2);
+      }
+
+      /* ── Grid ── */
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 2px;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #0f1117;
+      }
+
+      /* ── Player Card ── */
+
+      .item {
+        background: #161922;
+        padding-bottom: 16px;
+        animation: slideUp 0.5s ease-out both;
+      }
+
+      .item:nth-child(2) { animation-delay: 0.08s; }
+      .item:nth-child(3) { animation-delay: 0.12s; }
+      .item:nth-child(4) { animation-delay: 0.18s; }
+      .item:nth-child(5) { animation-delay: 0.24s; }
+
+      .player-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 14px 0;
+      }
+
+      .rank {
+        font-family: 'Bungee', cursive;
+        font-size: 32px;
+        color: #475569;
+        min-width: 36px;
+        text-align: center;
+        line-height: 1;
+        text-shadow: 0 2px 0 rgba(0,0,0,0.3);
+      }
+
+      .rank.rank-1 { color: #fbbf24; }
+      .rank.rank-2 { color: #94a3b8; }
+      .rank.rank-3 { color: #d97706; }
+
+      .player-name {
+        font-family: 'Bungee', cursive;
+        font-size: 28px;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 2px;
         line-height: 1;
       }
-      .week-badge {
-        font-family: "Teko", sans-serif;
-        font-style: normal;
-        font-size: 22px;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        background: rgba(255,255,255,0.15);
-        padding: 2px 10px;
-        border-radius: 4px;
-        color: rgba(255,255,255,0.9);
-        white-space: nowrap;
-        line-height: 1.2;
+
+      .win-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: auto;
+        padding-right: 8px;
       }
+
+      .win-count {
+        font-family: 'Bungee', cursive;
+        font-size: 36px;
+        color: #ff3c50;
+        line-height: 1;
+      }
+
+      .win-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      /* ── Win Bar ── */
+
+      .win-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        margin: 12px 14px 0;
+        border-radius: 100px;
+        overflow: hidden;
+      }
+
+      .win-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ff3c50, #f97316);
+        border-radius: 100px;
+        transform-origin: left;
+        animation: barGrow 0.8s ease-out 0.3s both;
+      }
+
+      .separator {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.06);
+        margin: 12px 14px 0;
+      }
+
+      /* ── Team Cards ── */
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
       .team-link {
         text-decoration: none;
         display: flex;
@@ -308,17 +338,18 @@ class MyList extends LitElement {
         background: linear-gradient(155deg, var(--team-color) 55%, var(--alternate-color) 50%);
         padding: 12px 16px 12px 8px;
         border-left: 5px solid var(--alternate-color);
-        font-size: 22px;
-        font-weight: bold;
+        font-size: 20px;
+        font-weight: 700;
         color: white;
-        margin: 5px 8px;
-        border-radius: 8px;
+        margin: 6px 10px;
+        border-radius: 12px;
         text-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 0 8px rgba(0,0,0,0.2);
-        transition: transform 0.15s, box-shadow 0.15s;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         position: relative;
         overflow: hidden;
       }
+
       .team-link::before {
         content: '';
         position: absolute;
@@ -326,28 +357,31 @@ class MyList extends LitElement {
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 50%, transparent 100%);
+        background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 100%);
         pointer-events: none;
         z-index: 1;
       }
+
       .team-link:hover {
-        transform: translateX(4px) scale(1.01);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       }
-      span[winner] {
-        font-weight: bold;
-        font-size: 16px;
+
+      .team-link:active {
+        transform: scale(0.98);
+        transition-duration: 0.1s;
       }
-      .record {
-        font-size: 12px;
-        font-weight: normal;
-        font-family: "Teko", sans-serif;
-        letter-spacing: 0.5px;
-        background: rgba(0,0,0,0.5);
-        padding: 2px 6px;
-        border-radius: 3px;
-        margin-top: 4px;
+
+      .team-link.h2h {
+        box-shadow: 0 0 0 2px #fbbf24, 0 4px 16px rgba(251,191,36,0.25);
       }
+
+      .team-link.h2h:hover {
+        box-shadow: 0 0 0 2px #fbbf24, 0 8px 24px rgba(251,191,36,0.4);
+      }
+
+      /* ── Logo ── */
+
       .logo {
         background: none;
         display: flex;
@@ -357,167 +391,266 @@ class MyList extends LitElement {
         position: relative;
         z-index: 2;
       }
+
       .logo img {
         filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
       }
+
+      .record {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        background: rgba(0,0,0,0.55);
+        padding: 2px 8px;
+        border-radius: 100px;
+        margin-top: 4px;
+        backdrop-filter: blur(4px);
+      }
+
+      /* ── Team Info ── */
+
       .team-info {
         flex: 1;
         min-width: 0;
         position: relative;
         z-index: 2;
       }
+
       .team-name-wins {
         display: flex;
         align-items: baseline;
         gap: 6px;
         flex-wrap: wrap;
       }
+
       .team-wins-num {
-        font-size: 28px;
+        font-family: 'Bungee', cursive;
+        font-size: 26px;
         line-height: 1;
       }
+
       .team-wins-label {
         font-size: 13px;
         font-weight: 400;
-        opacity: 0.8;
+        opacity: 0.75;
         text-shadow: none;
       }
+
       .game-info {
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 600;
         margin-top: 6px;
-        color: #222;
+        color: #1a1a2e;
         background: rgba(255,255,255,0.92);
         padding: 4px 10px;
-        border-radius: 4px;
+        border-radius: 100px;
         text-shadow: none;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         backdrop-filter: blur(4px);
+        letter-spacing: 0.3px;
       }
+
       .bye-week {
-        background: rgba(255,255,255,0.2);
-        color: rgba(255,255,255,0.7);
+        background: rgba(255,255,255,0.15);
+        color: rgba(255,255,255,0.6);
       }
+
       .live-badge {
-        background: #d00;
+        font-family: 'Bungee', cursive;
+        background: #dc2626;
         color: white;
         font-size: 9px;
-        font-weight: 700;
-        padding: 2px 5px;
-        border-radius: 3px;
+        padding: 2px 6px;
+        border-radius: 100px;
         letter-spacing: 1px;
         animation: pulse 1.5s ease-in-out infinite;
         text-transform: uppercase;
       }
+
       .game-info.live {
-        background: rgba(255,68,68,0.12);
+        background: rgba(220, 38, 38, 0.15);
         color: white;
-        border: 1px solid rgba(255,68,68,0.4);
+        border: 1px solid rgba(220, 38, 38, 0.4);
       }
+
       .h2h-badge {
-        background: #ffd700;
+        font-family: 'Bungee', cursive;
+        background: #fbbf24;
         color: #111;
         font-size: 9px;
-        font-weight: 700;
-        padding: 2px 6px;
-        border-radius: 3px;
+        padding: 2px 8px;
+        border-radius: 100px;
         letter-spacing: 0.5px;
         text-transform: uppercase;
         white-space: nowrap;
       }
-      .team-link.h2h {
-        box-shadow: 0 0 0 2px #ffd700, 0 2px 12px rgba(255,215,0,0.25);
+
+      span[winner] {
+        font-weight: bold;
+        font-size: 16px;
       }
+
+      /* ── Leftovers ── */
+
       .item.leftovers {
-        opacity: 0.7;
+        opacity: 0.6;
       }
+
       .item.leftovers .player-header {
-        padding: 8px 8px 0;
+        padding: 8px 10px 0;
       }
+
       .item.leftovers .player-name {
-        font-size: 24px;
-        color: #999;
+        font-size: 20px;
+        color: #94a3b8;
       }
+
       .item.leftovers .win-count {
-        font-size: 24px;
-        color: #666;
+        font-size: 22px;
+        color: #475569;
       }
+
       .item.leftovers .win-label {
-        color: #555;
+        color: #475569;
       }
+
       .item.leftovers .team-link {
         padding: 8px 12px 8px 6px;
         margin: 3px 8px;
         font-size: 16px;
+        border-radius: 8px;
       }
+
       .item.leftovers .team-wins-num {
-        font-size: 20px;
+        font-size: 18px;
       }
+
       .item.leftovers .logo img {
         width: 36px;
         height: 36px;
       }
+
       .item.leftovers .logo {
         min-width: 48px;
       }
-      ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
+
+      /* ── Footer ── */
+
+      footer {
+        background: #161922;
+        border-top: 2px solid rgba(255,255,255,0.06);
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
       }
-      .separator {
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #333, transparent);
-        margin: 0 16px;
+
+      .footer-link {
+        font-family: 'Bungee', cursive;
+        font-size: 11px;
+        background: rgba(255,60,80,0.1);
+        color: #ff3c50;
+        border: 2px solid rgba(255,60,80,0.3);
+        border-radius: 100px;
+        padding: 8px 20px;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
+
+      .footer-link:hover {
+        background: #ff3c50;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(255,60,80,0.3);
+      }
+
+      footer select {
+        background: rgba(255,255,255,0.06);
+        color: #94a3b8;
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 100px;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-family: 'Saira Condensed', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 1px;
+      }
+
+      footer select option {
+        background: #161922;
+        color: #e2e8f0;
+      }
+
+      /* ── Responsive ── */
+
       @media (max-width: 600px) {
         h1 {
-          font-size: 28px;
+          font-size: 22px;
           letter-spacing: 1px;
         }
+
         .week-badge {
-          font-size: 16px;
-          padding: 2px 8px;
+          font-size: 12px;
+          padding: 4px 10px;
         }
+
         .player-name {
-          font-size: 28px;
+          font-size: 22px;
         }
+
         .win-count {
           font-size: 28px;
         }
+
         .rank {
-          font-size: 22px;
-          min-width: 24px;
+          font-size: 24px;
+          min-width: 28px;
         }
+
         .team-link {
-          font-size: 18px;
+          font-size: 17px;
           padding: 10px 10px 10px 6px;
           gap: 10px;
+          margin: 5px 8px;
+          border-radius: 10px;
         }
+
         .team-wins-num {
-          font-size: 22px;
+          font-size: 20px;
         }
+
         .grid {
           grid-template-columns: 1fr;
         }
+
         .item.leftovers .team-link {
           font-size: 14px;
           padding: 6px 8px 6px 4px;
+          border-radius: 6px;
         }
+
         .item.leftovers .player-name {
-          font-size: 20px;
+          font-size: 18px;
         }
+
         .item.leftovers .win-count {
-          font-size: 20px;
+          font-size: 18px;
         }
+
         .item.leftovers .logo img {
           width: 28px;
           height: 28px;
         }
+
         .item.leftovers .team-wins-num {
-          font-size: 16px;
+          font-size: 14px;
         }
       }
     `
@@ -559,6 +692,7 @@ class MyList extends LitElement {
     }
 
     const ranked = this.getRankedStats()
+    const maxWins = Math.max(...ranked.filter(d => d.name !== 'LEFTOVERS').map(d => d.totalWins), 1)
 
     return html`
       <header>
@@ -578,6 +712,11 @@ class MyList extends LitElement {
               <div class="win-label">wins</div>
             </div>
           </div>
+          ${draft.name !== 'LEFTOVERS' ? html`
+            <div class="win-bar">
+              <div class="win-fill" style="width: ${draft.totalWins / maxWins * 100}%"></div>
+            </div>
+          ` : ''}
           <div class="separator"></div>
           <ul>
             ${draft.teams.sort((a, b) => b.wins - a.wins).map(team => html`
