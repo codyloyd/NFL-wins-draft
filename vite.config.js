@@ -1,4 +1,5 @@
 export default {
+  base: '/NFL-wins-draft/',
   build: {
     rollupOptions: {
       input: {
