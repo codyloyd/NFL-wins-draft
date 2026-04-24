@@ -1,0 +1,46 @@
+{
+  "2024": [
+    {
+      "name": "Ethan",
+      "teams": ["SF", "KC", "GB", "DAL", "CHI"]
+    },
+    {
+      "name": "Mom",
+      "teams": ["HOU", "MIA", "CIN", "PHI", "JAX"]
+    },
+    {
+      "name": "Dad",
+      "teams": ["BAL", "DET", "BUF", "ATL", "TB"]
+    },
+    {
+      "name": "Micah",
+      "teams": ["LAR", "CLE", "PIT", "SEA", "ARI"]
+    },
+    {
+      "name": "LEFTOVERS",
+      "teams": ["TEN", "NYJ", "IND", "CAR", "MIN", "LV", "LAC", "NYG", "NO", "DEN", "WSH", "NE"]
+    }
+  ],
+  "2025": [
+    {
+      "name": "Ethan",
+      "teams": ["BUF", "WSH", "DET", "TB", "DEN"]
+    },
+    {
+      "name": "Kayla",
+      "teams": ["PHI", "LAC", "SF", "JAX", "HOU"]
+    },
+    {
+      "name": "Cody",
+      "teams": ["BAL", "KC", "GB", "CIN", "LAR"]
+    },
+    {
+      "name": "BENJAMIN",
+      "teams": ["KC", "PIT", "ARI", "MIA", "PHI"]
+    },
+    {
+      "name": "LEFTOVERS",
+      "teams": ["ATL", "CAR", "CHI", "CLE", "DAL", "IND", "LV", "MIN", "NE", "NO", "NYG", "NYJ", "SEA", "TEN"]
+    }
+  ]
+}

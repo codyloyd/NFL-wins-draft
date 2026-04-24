@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,400;0,600;0,800;0,900;1,400;1,800;1,900&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  /* ── Typography ── */
+  --font-display: 'Anybody', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+  --text-3xl: 36px;
+  --text-4xl: 48px;
+  --text-5xl: 64px;
+
+  /* ── Core Palette: Slate ── */
+  --color-bg: #08090c;
+  --color-surface: #0e1014;
+  --color-surface-raised: #16181e;
+  --color-surface-hover: #1e2228;
+
+  --color-text: #d8dce4;
+  --color-text-secondary: #788494;
+  --color-text-muted: #3e4450;
+
+  /* ── Accent: Cool Steel ── */
+  --color-accent: #7ca0c4;
+  --color-accent-bright: #98badc;
+  --color-accent-dim: #5e82a4;
+  --color-accent-glow: rgba(124, 160, 196, 0.08);
+  --color-accent-text: #060c14;
+
+  /* ── Pop: Warm Terracotta ── */
+  --color-pop: #e8704a;
+  --color-pop-glow: rgba(232, 112, 74, 0.12);
+
+  /* ── Rank Colors ── */
+  --color-rank-1: #ffd740;
+  --color-rank-2: #b0bec5;
+  --color-rank-3: #e67c41;
+
+  /* ── Status Colors ── */
+  --color-live: #e8704a;
+  --color-final: #788494;
+  --color-scheduled: #d8dce4;
+  --color-bye: #3e4450;
+
+  /* ── Borders ── */
+  --color-border: rgba(124, 160, 196, 0.06);
+  --color-border-strong: rgba(124, 160, 196, 0.12);
+
+  /* ── Spacing ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Radius ── */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+  --radius-full: 100px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 30px rgba(124, 160, 196, 0.08);
+  --shadow-glow-pop: 0 0 20px rgba(232, 112, 74, 0.12);
+
+  /* ── Transitions ── */
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 220ms;
+  --duration-slow: 400ms;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
