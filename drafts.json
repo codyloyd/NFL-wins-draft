@@ -43,4 +43,63 @@
       "teams": ["ATL", "CAR", "CHI", "CLE", "DAL", "IND", "LV", "MIN", "NE", "NO", "NYG", "NYJ", "SEA", "TEN"]
     }
   ]
+  "2026": [
+        {
+      "name": "BEN",
+      "teams": [
+        "KC",
+        "JAX",
+        "MIN",
+        "IND",
+        "DAL"
+      ]
+    },
+    {
+      "name": "CODY",
+      "teams": [
+        "LAR",
+        "DEN",
+        "SEA",
+        "GB",
+        "CIN"
+      ]
+    },
+    {
+      "name": "KAYLA",
+      "teams": [
+        "BUF",
+        "HOU",
+        "PHI",
+        "BAL",
+        "DET"
+      ]
+    },
+    {
+      "name": "ETHAN",
+      "teams": [
+        "CHI",
+        "LAC",
+        "CAR",
+        "NE",
+        "TB"
+      ]
+    },
+    {
+      "name": "LEFTOVERS",
+      "teams": [
+        "ARI",
+        "ATL",
+        "CLE",
+        "LV",
+        "MIA",
+        "NO",
+        "NYG",
+        "NYJ",
+        "PIT",
+        "SF",
+        "TEN",
+        "WSH"
+      ]
+    }
+  ]
 }
