@@ -1,0 +1,57 @@
+const TEAMS = [
+  ['ARI', 22, 'Cardinals', 'Arizona', 'a40227', '000000'],
+  ['ATL', 1, 'Falcons', 'Atlanta', 'a71930', '000000'],
+  ['BAL', 33, 'Ravens', 'Baltimore', '241773', '9e7c0c'],
+  ['BUF', 2, 'Bills', 'Buffalo', '04407f', 'c60c30'],
+  ['CAR', 29, 'Panthers', 'Carolina', '0085ca', '101820'],
+  ['CHI', 3, 'Bears', 'Chicago', '0b162a', 'c83803'],
+  ['CIN', 4, 'Bengals', 'Cincinnati', 'fb4f14', '000000'],
+  ['CLE', 5, 'Browns', 'Cleveland', '311d00', 'ff3c00'],
+  ['DAL', 6, 'Cowboys', 'Dallas', '041e42', '869397'],
+  ['DEN', 7, 'Broncos', 'Denver', 'fb4f14', '002244'],
+  ['DET', 8, 'Lions', 'Detroit', '0076b6', 'b0b7bc'],
+  ['GB', 9, 'Packers', 'Green Bay', '203731', 'ffb612'],
+  ['HOU', 34, 'Texans', 'Houston', '03202f', 'a71930'],
+  ['IND', 11, 'Colts', 'Indianapolis', '002c5f', 'a2aaad'],
+  ['JAX', 30, 'Jaguars', 'Jacksonville', '006778', 'd7a22a'],
+  ['KC', 12, 'Chiefs', 'Kansas City', 'e31837', 'ffb81c'],
+  ['LV', 13, 'Raiders', 'Las Vegas', '000000', 'a5acaf'],
+  ['LAC', 24, 'Chargers', 'Los Angeles', '0080c6', 'ffc20e'],
+  ['LAR', 14, 'Rams', 'Los Angeles', '003594', 'ffd100'],
+  ['MIA', 15, 'Dolphins', 'Miami', '008e97', 'fc4c02'],
+  ['MIN', 16, 'Vikings', 'Minnesota', '4f2683', 'ffc62f'],
+  ['NE', 17, 'Patriots', 'New England', '002244', 'c60c30'],
+  ['NO', 18, 'Saints', 'New Orleans', 'd3bc8d', '101820'],
+  ['NYG', 19, 'Giants', 'New York', '0b2265', 'a71930'],
+  ['NYJ', 20, 'Jets', 'New York', '125740', '000000'],
+  ['PHI', 21, 'Eagles', 'Philadelphia', '004c54', 'a5acaf'],
+  ['PIT', 23, 'Steelers', 'Pittsburgh', 'ffb612', '101820'],
+  ['SEA', 26, 'Seahawks', 'Seattle', '002244', '69be28'],
+  ['SF', 25, '49ers', 'San Francisco', 'aa0000', 'b3995d'],
+  ['TB', 27, 'Buccaneers', 'Tampa Bay', 'd50a0a', '34302b'],
+  ['TEN', 10, 'Titans', 'Tennessee', '0c2340', '4b92db'],
+  ['WSH', 28, 'Commanders', 'Washington', '5a1414', 'ffb612'],
+];
+
+export const STATIC_TEAMS = TEAMS.map(([abbr, id, name, location, color, alternateColor]) => {
+  const slug = abbr.toLowerCase();
+  return {
+    team: {
+      id: String(id),
+      abbreviation: abbr,
+      displayName: `${location} ${name}`,
+      shortDisplayName: name,
+      name,
+      nickname: name,
+      color,
+      alternateColor,
+      logos: [{ href: `https://a.espncdn.com/i/teamlogos/nfl/500/${slug}.png` }],
+      links: [
+        { href: `https://www.espn.com/nfl/team/_/name/${slug}` },
+        { href: `https://www.espn.com/nfl/team/roster/_/name/${slug}` },
+        { href: `https://www.espn.com/nfl/team/stats/_/name/${slug}` },
+        { href: `https://www.espn.com/nfl/team/schedule/_/name/${slug}` },
+      ],
+    },
+  };
+});

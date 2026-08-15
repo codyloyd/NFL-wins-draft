@@ -1,5 +1,6 @@
 import bundledDrafts from '../drafts.json';
 import { MOCK_SCHEDULE, MOCK_WEEK, MOCK_RECORDS } from './mock.js';
+import { STATIC_TEAMS } from './teams-static.js';
 
 const USE_MOCK = false;
 
@@ -17,11 +18,15 @@ export async function fetchTeams() {
   const cached = localStorage.getItem('wd-teams');
   if (cached) return JSON.parse(cached);
 
-  const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams');
-  const json = await res.json();
-  const teams = json.sports[0].leagues[0].teams;
-  localStorage.setItem('wd-teams', JSON.stringify(teams));
-  return teams;
+  try {
+    const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams');
+    const json = await res.json();
+    const teams = json.sports[0].leagues[0].teams;
+    localStorage.setItem('wd-teams', JSON.stringify(teams));
+    return teams;
+  } catch {
+    return STATIC_TEAMS;
+  }
 }
 
 export async function fetchSchedule() {
@@ -65,21 +70,7 @@ export async function fetchRecord(teamId, year, abbr) {
 }
 
 export async function fetchDrafts() {
-  const cached = localStorage.getItem('wd-drafts');
-  if (cached) return JSON.parse(cached);
-
-  try {
-    const res = await fetch(
-      `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/drafts.json`
-    );
-    if (res.ok) {
-      const json = await res.json();
-      localStorage.setItem('wd-drafts', JSON.stringify(json));
-      return json;
-    }
-  } catch { /* fall through to bundled data */ }
-
-  localStorage.setItem('wd-drafts', JSON.stringify(bundledDrafts));
+  localStorage.removeItem('wd-drafts');
   return bundledDrafts;
 }
 
